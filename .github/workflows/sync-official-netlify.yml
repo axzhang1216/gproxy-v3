@@ -44,3 +44,5 @@ jobs:
           fi
           git commit -m "chore: replace with official GPROXY v3.0.20 Netlify bundle"
           git push origin deploy
+
+# trigger official bundle sync
