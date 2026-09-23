@@ -1,0 +1,1 @@
+export function gproxyUpstashFetch(request) { return globalThis.fetch(request); }
