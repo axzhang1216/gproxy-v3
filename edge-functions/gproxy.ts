@@ -58,7 +58,8 @@ export default async (request: Request, context: Context) => {
     const reply = await runtime.fetch(request, context.ip)
     if (reply.continuation) context.waitUntil(reply.continuation)
     return reply.takeResponse() ?? new Response("edge host returned no response", { status: 500 })
-  } catch {
+  } catch (error) {
+    console.error("GPROXY edge request failed:", error)
     return Response.json({ error: { message: "edge request failed" } }, { status: 500 })
   }
 }
