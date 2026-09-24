@@ -47,6 +47,16 @@ function isStatic(request: Request) {
 }
 
 export default async (request: Request, context: Context) => {
+  const path = new URL(request.url).pathname
+  if (path === "/__gproxy_diag") {
+    return Response.json({
+      ok: true,
+      handler: "gproxy",
+      hasLibsqlUrl: Boolean(Netlify.env.get("GPROXY_LIBSQL_URL")),
+      hasLibsqlAuthToken: Boolean(Netlify.env.get("GPROXY_LIBSQL_AUTH_TOKEN")),
+    })
+  }
+
   if (isStatic(request)) {
     const path = new URL(request.url).pathname
     return path === "/admin" || path.startsWith("/admin/")
