@@ -5,11 +5,12 @@ declare const Deno: {
   readFile(path: URL): Promise<Uint8Array>
 }
 
-const wasmReady = Deno.readFile(new URL("../pkg/gproxy_host_edge_bg.wasm", import.meta.url))
-  .then((bytes) => init(bytes))
+let wasmReady: Promise<unknown> | undefined
 let hostPromise: ReturnType<typeof start> | undefined
 
 async function host() {
+  wasmReady ??= Deno.readFile(new URL("../pkg/gproxy_host_edge_bg.wasm", import.meta.url))
+    .then((bytes) => init(bytes))
   await wasmReady
   const config = new EdgeConfig(
     required("GPROXY_LIBSQL_URL"),
