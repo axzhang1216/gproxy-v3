@@ -19,3 +19,30 @@ excludedPath = [
   "/assets/*",
   "/favicon.svg",
 ]
+
+
+# Netlify serves the SPA from public/index.html. Exact /admin and /portal are
+# excluded from the Edge Function above, so rewrite those entrypoints to the SPA.
+[[redirects]]
+from = "/admin"
+to = "/index.html"
+status = 200
+force = true
+
+[[redirects]]
+from = "/admin/"
+to = "/index.html"
+status = 200
+force = true
+
+[[redirects]]
+from = "/portal"
+to = "/index.html"
+status = 200
+force = true
+
+[[redirects]]
+from = "/portal/"
+to = "/index.html"
+status = 200
+force = true
