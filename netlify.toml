@@ -46,3 +46,5 @@ from = "/portal/"
 to = "/index.html"
 status = 200
 force = true
+
+# deployment sync trigger
