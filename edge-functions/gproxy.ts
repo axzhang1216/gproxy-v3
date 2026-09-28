@@ -1,18 +1,18 @@
 import type { Context } from "@netlify/edge-functions"
-import init, { EdgeConfig, start } from "../pkg/gproxy_host_edge.js"
-
 declare const Deno: {
   readFile(path: URL): Promise<Uint8Array>
 }
 
+let modulePromise: Promise<any> | undefined
 let wasmReady: Promise<unknown> | undefined
-let hostPromise: ReturnType<typeof start> | undefined
+let hostPromise: Promise<any> | undefined
 
 async function host() {
+  const mod = await (modulePromise ??= import("../pkg/gproxy_host_edge.js"))
   wasmReady ??= Deno.readFile(new URL("../pkg/gproxy_host_edge_bg.wasm", import.meta.url))
-    .then((bytes) => init(bytes))
+    .then((bytes) => mod.default(bytes))
   await wasmReady
-  const config = new EdgeConfig(
+  const config = new mod.EdgeConfig(
     required("GPROXY_LIBSQL_URL"),
     required("GPROXY_LIBSQL_AUTH_TOKEN"),
     Netlify.env.get("GPROXY_MASTER_KEY"),
@@ -21,7 +21,7 @@ async function host() {
     Netlify.env.get("UPSTASH_URL"),
     Netlify.env.get("UPSTASH_TOKEN"),
   )
-  hostPromise ??= start(config)
+  hostPromise ??= mod.start(config)
   return hostPromise
 }
 
